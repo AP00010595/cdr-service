@@ -1,0 +1,38 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: cdr-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/cdrdb
+    username: user
+    password: password
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  sql:
+    init:
+      mode: always
+
+tracing:
+  url: http://collector:4318/v1/traces
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+  pattern:
+    level: "%5p [${spring.application.name:-},%X{X-B3-TraceId:-},%X{X-B3-SpanId:-},%X{X-Span-Export:-}]"
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  endpoints:
+    web:
+      exposure:
+        include: health, metrics, traces
+
